@@ -1,0 +1,12 @@
+---
+services:
+
+  postgres:
+    # https://hub.docker.com/_/postgres?tab=tags&page=1&name=12.4
+    image: postgres:15.0-alpine
+    environment:
+      POSTGRES_USER: development
+      POSTGRES_PASSWORD: development
+      POSTGRES_DB: database
+    ports:
+      - $PROJECT_IP:${DOCKER_PORT_POSTGRES:-5432}:5432
