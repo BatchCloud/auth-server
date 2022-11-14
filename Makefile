@@ -3,7 +3,7 @@ CONTAINERS := postgres
 MAKE = make --no-print-directory
 DOCKER = docker
 # ls -1 ./docker/_compose/docker-compose.*
-DOCKER_COMPOSE = docker-compose --env-file .env -f ./docker/_compose/docker-compose.php.yml
+DOCKER_COMPOSE = docker-compose
 CLI = $(DOCKER_COMPOSE) exec -T cli
 
 # DOCKER ###############################################################################################################
@@ -11,7 +11,6 @@ CLI = $(DOCKER_COMPOSE) exec -T cli
 start: ##@docker start containers
 	#$(MAKE) -s copy-dist-files
 	$(DOCKER_COMPOSE) up --build --detach
-	#$(CLI) /entrypoint.sh
 .PHONY: start
 
 logs: ##@docker show server logs
