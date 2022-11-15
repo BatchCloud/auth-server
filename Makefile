@@ -3,7 +3,7 @@ CONTAINERS := postgres
 MAKE = make --no-print-directory
 DOCKER = docker
 # ls -1 ./docker/_compose/docker-compose.*
-DOCKER_COMPOSE = docker-compose
+DOCKER_COMPOSE = ./vendor/bin/sail
 CLI = $(DOCKER_COMPOSE) exec -T cli
 
 # DOCKER ###############################################################################################################
@@ -20,6 +20,7 @@ logs: ##@docker show server logs
 stop: ##@docker stop containers
 	$(DOCKER_COMPOSE) stop --timeout 1
 .PHONY: stop
+
 
 restart: ##@docker restart containers
 	$(MAKE) stop
