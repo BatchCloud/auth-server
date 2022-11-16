@@ -14,13 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('activities', function (Blueprint $table) {
-            $table->id();
-            $table->integerIncrements('user');
-            $table->ipAddress('ip');
-            $table->string('action');
-            $table->string('message');
-            $table->string('userAgent');
-            $table->timestamps();
+            //$table->id();
+            //$table->integerIncrements('user');
+            //$table->ipAddress('ip');
+            //$table->string('action');
+            //$table->string('message');
+            //$table->string('userAgent');
+            //$table->timestamps();
         });
     }
 
