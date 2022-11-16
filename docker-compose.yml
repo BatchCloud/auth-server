@@ -1,113 +1,126 @@
 version: '3'
 
 networks:
-  laravel:
+    laravel:
 
 services:
-  app:
-    build:
-      context: ./dockerfiles
-      dockerfile: nginx.dockerfile
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-    ports:
-      - "81:80"
-    volumes:
-      - ./:/var/www/html:delegated
-    depends_on:
-      - php
-      - redis
-      - mysql
-      - mailhog
-    networks:
-      - laravel
+    app:
+        build:
+            context: ./dockerfiles
+            dockerfile: nginx.dockerfile
+            args:
+                - UID=${UID:-1000}
+                - GID=${GID:-1000}
+        ports:
+            - "81:80"
+        volumes:
+            - ./:/var/www/html:delegated
+        depends_on:
+            - php
+            - redis
+            - mysql
+            - mailhog
+        networks:
+            - laravel
 
-  mysql:
-    image: mariadb:10.6
-    restart: unless-stopped
-    tty: true
-    ports:
-      - "3307:3306"
-    environment:
-      MYSQL_DATABASE: database
-      MYSQL_USER: development
-      MYSQL_PASSWORD: development
-      MYSQL_ROOT_PASSWORD: secret
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    networks:
-      - laravel
+    mysql:
+        image: mariadb:10.6
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "3307:3306"
+        environment:
+            MYSQL_DATABASE: database
+            MYSQL_USER: development
+            MYSQL_PASSWORD: development
+            MYSQL_ROOT_PASSWORD: secret
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        networks:
+            - laravel
 
-  php:
-    build:
-      context: ./dockerfiles
-      dockerfile: php.root.dockerfile
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-    ports:
-      - "9001:9000"
-    volumes:
-      - ./:/var/www/html:delegated
-    networks:
-      - laravel
+    postgres:
+        image: postgres:12.4-alpine
+        restart: unless-stopped
+        tty: true
+        environment:
+            POSTGRES_USER: development
+            POSTGRES_PASSWORD: development
+            POSTGRES_DB: database
+        ports:
+            - "5433:5432"
+        networks:
+            - laravel
 
-  redis:
-    image: redis:alpine
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    networks:
-      - laravel
+    php:
+        build:
+            context: ./dockerfiles
+            dockerfile: php.root.dockerfile
+            args:
+                - UID=${UID:-1000}
+                - GID=${GID:-1000}
+        ports:
+            - "9001:9000"
+        volumes:
+            - ./:/var/www/html:delegated
+        networks:
+            - laravel
 
-  composer:
-    build:
-      context: ./dockerfiles
-      dockerfile: php.root.dockerfile
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-    volumes:
-      - ./:/var/www/html
-    depends_on:
-      - php
-    entrypoint: [ 'composer', '--ignore-platform-reqs' ]
-    networks:
-      - laravel
+    redis:
+        image: redis:alpine
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        networks:
+            - laravel
 
-  npm:
-    image: node:current-alpine
-    volumes:
-      - ./:/var/www/html
-    ports:
-      - "3000:3000"
-      - "3001:3001"
-      - "5173:5173"
-    working_dir: /var/www/html
-    entrypoint: [ 'npm' ]
-    networks:
-      - laravel
+    composer:
+        build:
+            context: ./dockerfiles
+            dockerfile: php.root.dockerfile
+            args:
+                - UID=${UID:-1000}
+                - GID=${GID:-1000}
+        volumes:
+            - ./:/var/www/html
+        depends_on:
+            - php
+        entrypoint: ['composer', '--ignore-platform-reqs']
+        networks:
+            - laravel
 
-  artisan:
-    build:
-      context: ./dockerfiles
-      dockerfile: php.root.dockerfile
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-    volumes:
-      - ./:/var/www/html:delegated
-    depends_on:
-      - mysql
-    entrypoint: [ 'php', '/var/www/html/artisan' ]
-    networks:
-      - laravel
+    npm:
+        image: node:current-alpine
+        volumes:
+            - ./:/var/www/html
+        ports:
+            - "3000:3000"
+            - "3001:3001"
+            - "5173:5173"
+        working_dir: /var/www/html
+        entrypoint: ['npm']
+        networks:
+            - laravel
 
-  mailhog:
-    image: mailhog/mailhog:latest
-    ports:
-      - "1025:1025"
-      - "8025:8025"
-    networks:
-      - laravel
+    artisan:
+        build:
+            context: ./dockerfiles
+            dockerfile: php.root.dockerfile
+            args:
+                - UID=${UID:-1000}
+                - GID=${GID:-1000}
+        volumes:
+            - ./:/var/www/html:delegated
+        depends_on:
+            - mysql
+        entrypoint: ['php', '/var/www/html/artisan']
+        networks:
+            - laravel
+
+    mailhog:
+        image: mailhog/mailhog:latest
+        ports:
+            - "1025:1025"
+            - "8025:8025"
+        networks:
+            - laravel
