@@ -8,7 +8,9 @@
     </head>
     <body>
         <h1>Single Sign On OAuth 2.0 Server</h1>
-
+        <h1 class="text-3xl font-bold underline">
+            Hello world!
+        </h1>
         <a href="/home">Home</a>
     </body>
 </html>
